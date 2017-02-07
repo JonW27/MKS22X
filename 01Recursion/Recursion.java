@@ -6,10 +6,9 @@ public class Recursion{
         if(n < 0){
             throw new IllegalArgumentException();
         }
-        return helper(n,1, -1);
+        return n == 0 ? 0 : helper(n,1, -1);
     }
     private static double helper(double n, double guess, double former){
-        //System.out.println(guess);
         return prox(n,guess) || guess == former ? guess : helper(n,((n/guess)+guess)/2, guess);
     }
     private static boolean prox(double n, double guess){
