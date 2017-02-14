@@ -21,15 +21,16 @@ public class QueenBoard{
     }
 
     private boolean solveH(int col, int row, boolean failed){
+        System.out.println("The 6:7 Status: "+board[6][7]);
         if(failed){
-            System.out.println("a failure happened");
+            System.out.println("a failure happened" + col + " " + (row - 1));
             removeLaser(col, row-1);
             board[col][row-1] = 0;
         }
         else if(col == board.length){
             return true;
         }
-        else if(board[col][row] == 0 && row == board.length - 1){
+        else if(row == board.length - 1 && board[col][row] == 0){
             System.out.println(col +" "+ row + " has been selected for a queen");
             board[col][row] = -1;
             createLaser(col, row);
@@ -41,7 +42,10 @@ public class QueenBoard{
             createLaser(col, row);
             return solveH(col+1, 0, false) || solveH(col, row+1, true);    
         }
-        else if(row == board.length - 1){
+        if(row == board.length - 1){
+            System.out.println("A failure (EOL) happened "+col+" "+row);
+            board[col][row] = 0;
+            removeLaser(col, row-1);
             return false;
         }
         System.out.print(col + " "+ row + " was passed on, ");
@@ -49,13 +53,14 @@ public class QueenBoard{
     }
     private void createLaser(int col, int row){
         for(int i = col+1; i < board.length; i++){
+            System.out.print(i+" "+row+" is temp. unavailable "+board[i][row]+"; ");
             board[i][row] += 1;  
         }
         for(int i = col+1, j = row+1; i < board.length && j < board.length; i++, j++){
             board[i][j] += 1;
             System.out.print(i+" "+j+" is temp. unavailable "+board[i][j]+"; ");
         }
-        for(int i = col+1, j = row-1; i < board.length && j > 0; i++, j--){
+        for(int i = col+1, j = row-1; i < board.length && j >= 0; i++, j--){
             board[i][j] += 1;
             System.out.print(i+" "+j+" is temp. unavailable "+board[i][j]+"; ");
         }
@@ -67,9 +72,18 @@ public class QueenBoard{
         for(int i = col+1, j = row; i < board.length && j < board.length; i++, j++){
             board[i][j] = validate(board[i][row]);
             System.out.print(i+" "+j+" is now available:"+board[i][j]+"; ");
+            if(i == 6 && j == 7){
+                System.out.println("called 2");
+            }
         }
-        for(int i = col-1, j = row; i < board.length && j > 0; i++, j--){
-            board[i][j] = validate(board[i][row]);
+        for(int i = col+1, j = row; i < board.length && j >= 0; i++, j--){
+            if(i == 6 && j == 7){
+                System.out.println("called 3");
+                System.out.println(validate(3));
+                System.out.println(board[i][j]);
+                System.out.println(validate(board[i][j]));
+            }
+            board[i][j] = validate(board[i][j]);
             System.out.print(i+" "+j+" is now available:"+board[i][j]+"; ");
         }
     }
