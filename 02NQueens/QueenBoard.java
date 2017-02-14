@@ -17,78 +17,108 @@ public class QueenBoard{
      */
     public void solve(){
         cleanBoard();
-        solveH(0, 0, false);
+	    if(board.length != 2 && board.length != 3){
+            solveH(0);
+        }    
     }
-
-    private boolean solveH(int col, int row, boolean failed){
-        System.out.println("The 6:7 Status: "+board[6][7]);
-        if(failed){
-            System.out.println("a failure happened" + col + " " + (row - 1));
-            removeLaser(col, row-1);
-            board[col][row-1] = 0;
-        }
-        else if(col == board.length){
+    // 1 - 1 = 0 also 1 / 1 = 1     2,1 4,3
+    private boolean solveH(int col){ // when its late at night and your other very efficient solution is very buggy, you go with the fastest you can write
+        if(col == board.length){
             return true;
         }
-        else if(row == board.length - 1 && board[col][row] == 0){
-            System.out.println(col +" "+ row + " has been selected for a queen");
-            board[col][row] = -1;
-            createLaser(col, row);
-            return solveH(col+1, 0, false) || false;
-        }
-        else if(board[col][row] == 0){
-            System.out.println(col +" "+ row + " has been selected for a queen");
-            board[col][row] = -1;
-            createLaser(col, row);
-            return solveH(col+1, 0, false) || solveH(col, row+1, true);    
-        }
-        if(row == board.length - 1){
-            System.out.println("A failure (EOL) happened "+col+" "+row);
-            board[col][row] = 0;
-            removeLaser(col, row-1);
-            return false;
-        }
-        System.out.print(col + " "+ row + " was passed on, ");
-        return solveH(col, row+1, false);
-    }
-    private void createLaser(int col, int row){
-        for(int i = col+1; i < board.length; i++){
-            System.out.print(i+" "+row+" is temp. unavailable "+board[i][row]+"; ");
-            board[i][row] += 1;  
-        }
-        for(int i = col+1, j = row+1; i < board.length && j < board.length; i++, j++){
-            board[i][j] += 1;
-            System.out.print(i+" "+j+" is temp. unavailable "+board[i][j]+"; ");
-        }
-        for(int i = col+1, j = row-1; i < board.length && j >= 0; i++, j--){
-            board[i][j] += 1;
-            System.out.print(i+" "+j+" is temp. unavailable "+board[i][j]+"; ");
-        }
-    }
-    private void removeLaser(int col, int row){
-        for(int i = col+1; i < board.length; i++){
-            board[i][row] = validate(board[i][row]);  
-        }
-        for(int i = col+1, j = row; i < board.length && j < board.length; i++, j++){
-            board[i][j] = validate(board[i][row]);
-            System.out.print(i+" "+j+" is now available:"+board[i][j]+"; ");
-            if(i == 6 && j == 7){
-                System.out.println("called 2");
+        for(int row = 0; row < board.length; row++){
+            if(board[col][row] == 0){
+                board[col][row] = -1;
+                for(int i = col+1; i < board.length; i++){
+                    board[i][row] += 1;
+                }
+                for(int i = col+1, j = row+1; i < board.length && j < board.length; i++, j++){
+                    board[i][j] += 1;
+                    //System.out.println(i + ", " + j + " should be blocked from access.");
+                }
+                System.out.println("\n");
+                for(int i = col+1, j = row-1; i < board.length && j > 0; i++, j--){
+                    board[i][j] += 1;
+                }
+                if(solveH(col+1)){
+                    return true;
+                }
+                //System.out.println("triggered"); // i really want breakpoints // it *&(*^*&((()))) works
+                board[col][row] = 0;
+                for(int i = col+1; i < board.length; i++){
+                    board[i][row] -= 1;
+                }
+                for(int i = col+1, j = row+1; i < board.length && j < board.length; i++, j++){
+                    board[i][j] -= 1;
+                }
+                for(int i = col+1, j = row-1; i < board.length && j > 0; i++, j--){
+                    board[i][j] -= 1;
+                }
             }
         }
-        for(int i = col+1, j = row; i < board.length && j >= 0; i++, j--){
-            if(i == 6 && j == 7){
-                System.out.println("called 3");
-                System.out.println(validate(3));
-                System.out.println(board[i][j]);
-                System.out.println(validate(board[i][j]));
+        return false;
+    }
+
+    public void countSolutions(){
+        cleanBoard();
+        minihelper(0);
+    }
+    private void minihelper(int col){
+        if(col == board.length){
+            solutionCount++;
+        }
+        for(int i = 0; i < board.length; i++){
+            outsource(); // left off
+        }    
+    }
+    private void outsource(int col){
+        for(int row = 0; row < board.length; row++){
+            if(board[col][row] == 0){
+                board[col][row] = -1;
+                for(int i = col+1; i < board.length; i++){
+                    board[i][row] += 1;
+                }
+                for(int i = col+1, j = row+1; i < board.length && j < board.length; i++, j++){
+                    board[i][j] += 1;
+                    //System.out.println(i + ", " + j + " should be blocked from access.");
+                }
+                System.out.println("\n");
+                for(int i = col+1, j = row-1; i < board.length && j > 0; i++, j--){
+                    board[i][j] += 1;
+                }
+                if(solveH(col+1)){
+                    solutionCount += 1;
+                    return;
+                }
+                //System.out.println("triggered"); // i really want breakpoints // it *&(*^*&((()))) works
+                board[col][row] = 0;
+                for(int i = col+1; i < board.length; i++){
+                    board[i][row] -= 1;
+                }
+                for(int i = col+1, j = row+1; i < board.length && j < board.length; i++, j++){
+                    board[i][j] -= 1;
+                }
+                for(int i = col+1, j = row-1; i < board.length && j > 0; i++, j--){
+                    board[i][j] -= 1;
+                }
             }
-            board[i][j] = validate(board[i][j]);
-            System.out.print(i+" "+j+" is now available:"+board[i][j]+"; ");
         }
     }
-    private int validate(int val){
-        return val == 0 ? 0 : val - 1;
+
+    /**
+     *@return the number of solutions found, or -1 if the board was never solved.
+     *The board should be reset after this is run.    
+     */
+
+    public int getSolutionCount(){
+        if(board.length < 0){
+            return -1;
+        }
+    	else if(board.length == 2 || board.length == 3){
+            return 0;
+        }
+        return solutionCount; 
+
     }
 
     private void cleanBoard(){
@@ -99,26 +129,33 @@ public class QueenBoard{
         }       
     }
 
-    /**
-     *@return the number of solutions found, or -1 if the board was never solved.
-     *The board should be reset after this is run.    
-     */
-    public int getSolutionCount(){
-    	return -1;
-    }
     /**toString
      *and all nunbers that represent queens are replaced with 'Q' 
      *all others are displayed as underscores '_'
      */
     public String toString(){
+        Boolean DEBUG = false;
         String ret = "";
         for(int i = 0; i < board.length; i++){
             for(int k = 0; k < board.length; k++){
-                if(board[k][i] >= 0){ // need to switch k and i so that it prints row first
-                    ret+= "_";
+                if(DEBUG){
+                    if(board[k][i] == 0){ // need to switch k and i so that it prints row first
+                        ret += "0";
+                    }
+                    else if(board[k][i] >= 1){
+                        ret += "1";
+                    }
+                    else{
+                        ret += "Q";
+                    }
                 }
                 else{
-                    ret += "Q";
+                    if(board[k][i] >= 0){ // need to switch k and i so that it prints row first
+                        ret+= "_";
+                    }
+                    else{
+                        ret += "Q";
+                    }
                 }
             }
             ret += "\n";
