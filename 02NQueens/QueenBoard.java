@@ -94,7 +94,7 @@ public class QueenBoard{
         if(board.length < 0){
             return -1;
         }
-    	else if(board.length == 2 || board.length == 3){
+    	else if(board.length == 2 || board[0].length == 3){
             return 0;
         }
         return solutionCount;

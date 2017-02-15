@@ -15,12 +15,17 @@ public class KnightBoard{
         solveH(0,0,1);
     }
     private boolean solveH(int row, int col, int level){
-        if(level == board.length){
+        if(level > board.length * board.length){
             return true;
+        }
+        if(col >= board.length || col < 0 || row >= board.length || row < 0){
+            return false;
         }
         if(board[col][row] == 0){
             board[col][row] = level;
-            if(solveH(row+2, col+1, level+=1) || solveH(row+1, col+2, level+=1) || solveH(row-2, col-1, level+=1) || solveH(row-1, col+2, level+=1)){
+            if(solveH(row+2, col+1, level+1) || solveH(row+1, col+2, level+1) || solveH(row-2, col-1, level+1) || 
+            solveH(row-1, col+2, level+1) || solveH(row-1, col-2, level+1) || solveH(row+2, col-1, level+1) || 
+            solveH(row-2, col+1, level+1) || solveH(row+1, col-2, level+1)){
                 return true;
             }
             board[col][row] = 0;
@@ -31,9 +36,10 @@ public class KnightBoard{
         String ret = "";
         for(int i = 0; i < board.length; i++){
             for(int k = 0; k < board.length; k++){
-                ret+=board[k][i];
+                ret=ret + board[k][i] + " ";
             }
             ret+="\n";
         }
+        return ret;
     }
 }
