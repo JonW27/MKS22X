@@ -28,6 +28,19 @@ public class QueenBoard{
         }
         for(int row = 0; row < board.length; row++){
             if(board[col][row] == 0){
+                addQueen(row,col);
+                if(solveH(col+1)){
+                    return true;
+                }
+                //System.out.println("\n");
+                //System.out.println("triggered"); // i really want breakpoints // it *&(*^*&((()))) works
+                removeQueen(row,col);
+            }
+        }
+        return false;
+    }
+
+    private void addQueen(int row, int col){
                 board[col][row] = -1;
                 for(int i = col+1; i < board.length; i++){
                     board[i][row] += 1;
@@ -36,27 +49,22 @@ public class QueenBoard{
                     board[i][j] += 1;
                     //System.out.println(i + ", " + j + " should be blocked from access.");
                 }
-                System.out.println("\n");
                 for(int i = col+1, j = row-1; i < board.length && j > 0; i++, j--){
                     board[i][j] += 1;
                 }
-                if(solveH(col+1)){
-                    return true;
-                }
-                //System.out.println("triggered"); // i really want breakpoints // it *&(*^*&((()))) works
-                board[col][row] = 0;
-                for(int i = col+1; i < board.length; i++){
-                    board[i][row] -= 1;
-                }
-                for(int i = col+1, j = row+1; i < board.length && j < board.length; i++, j++){
-                    board[i][j] -= 1;
-                }
-                for(int i = col+1, j = row-1; i < board.length && j > 0; i++, j--){
-                    board[i][j] -= 1;
-                }
-            }
+    }
+    
+    private void removeQueen(int row, int col){
+        board[col][row] = 0;
+        for(int i = col+1; i < board.length; i++){
+            board[i][row] -= 1;
         }
-        return false;
+        for(int i = col+1, j = row+1; i < board.length && j < board.length; i++, j++){
+            board[i][j] -= 1;
+        }
+        for(int i = col+1, j = row-1; i < board.length && j > 0; i++, j--){
+            board[i][j] -= 1;
+        }
     }
 
     public void countSolutions(){
@@ -66,43 +74,15 @@ public class QueenBoard{
     private void minihelper(int col){
         if(col == board.length){
             solutionCount++;
+            return;
         }
         for(int i = 0; i < board.length; i++){
-            outsource(); // left off
-        }    
-    }
-    private void outsource(int col){
-        for(int row = 0; row < board.length; row++){
-            if(board[col][row] == 0){
-                board[col][row] = -1;
-                for(int i = col+1; i < board.length; i++){
-                    board[i][row] += 1;
-                }
-                for(int i = col+1, j = row+1; i < board.length && j < board.length; i++, j++){
-                    board[i][j] += 1;
-                    //System.out.println(i + ", " + j + " should be blocked from access.");
-                }
-                System.out.println("\n");
-                for(int i = col+1, j = row-1; i < board.length && j > 0; i++, j--){
-                    board[i][j] += 1;
-                }
-                if(solveH(col+1)){
-                    solutionCount += 1;
-                    return;
-                }
-                //System.out.println("triggered"); // i really want breakpoints // it *&(*^*&((()))) works
-                board[col][row] = 0;
-                for(int i = col+1; i < board.length; i++){
-                    board[i][row] -= 1;
-                }
-                for(int i = col+1, j = row+1; i < board.length && j < board.length; i++, j++){
-                    board[i][j] -= 1;
-                }
-                for(int i = col+1, j = row-1; i < board.length && j > 0; i++, j--){
-                    board[i][j] -= 1;
-                }
+            if(board[col][i] == 0){
+                addQueen(i, col);
+                minihelper(col+1);
+                removeQueen(i,col);
             }
-        }
+        }    
     }
 
     /**
@@ -117,8 +97,7 @@ public class QueenBoard{
     	else if(board.length == 2 || board.length == 3){
             return 0;
         }
-        return solutionCount; 
-
+        return solutionCount;
     }
 
     private void cleanBoard(){
