@@ -44,7 +44,7 @@ public class QueenBoard{
         for(int i = col, j = row; i < board.length && j < board.length; i++, j++){
             board[j][i] += 1;
         }
-        for(int i = col, j = row; i < board.length && j > 0; i++, j--){
+        for(int i = col, j = row; i < board.length && j >= 0; i++, j--){
             board[j][i] += 1;
         }
         board[row][col] = -1;
@@ -57,7 +57,7 @@ public class QueenBoard{
         for(int i = col, j = row; i < board.length && j < board.length; i++, j++){
             board[j][i] -= 1;
         }
-        for(int i = col, j = row; i < board.length && j > 0; i++, j--){
+        for(int i = col, j = row; i < board.length && j >= 0; i++, j--){
             board[j][i] -= 1;
         }
         board[row][col] = 0;
@@ -69,6 +69,7 @@ public class QueenBoard{
     }
     private void minihelper(int col){
         if(col == board.length){
+            //System.out.println(this.toString());
             solutionCount++;
             return;
         }
