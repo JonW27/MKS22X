@@ -1,7 +1,8 @@
 public class QueenBoard{
     private int[][]board;
     private int solutionCount;
-    
+    private boolean ran = false;
+
     public QueenBoard(int size){
 	    board = new int[size][size];
     }
@@ -64,6 +65,7 @@ public class QueenBoard{
     }
 
     public void countSolutions(){
+	ran = true;
         cleanBoard();
         minihelper(0);
     }
@@ -88,7 +90,10 @@ public class QueenBoard{
      */
 
     public int getSolutionCount(){
-        if(board.length < 0){
+	if(!ran){
+		return -1;
+	}
+        if(board.length <= 0){
             return -1;
         }
     	else if(board.length == 2 || board[0].length == 3){

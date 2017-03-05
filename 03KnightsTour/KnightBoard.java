@@ -12,7 +12,7 @@ public class KnightBoard{
         }
     }
     public void solve(){
-        solveH(0,0,1);
+        solveH(board.length/2,board.length/2,1); // integer division for da win
     }
     private boolean solveH(int row, int col, int level){
         if(level > board.length * board.length){
