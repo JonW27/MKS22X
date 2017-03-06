@@ -6,6 +6,8 @@ public class Maze{
     private char[][]maze;
     private boolean animate;
     private int lineE, lineS;
+    private int cursorX;
+    private int cursorY;
 
     /*Constructor loads a maze text file, and sets animate to false by default.
       1. The file contains a rectangular ascii maze, made with the following 4 characters:
@@ -20,6 +22,8 @@ public class Maze{
     public Maze(String filename){
         lineS = 0;
         lineE = 0;
+        cursorX = 0;
+        cursorY = 0;
         try{
             readFile(filename);
         }
@@ -84,10 +88,20 @@ public class Maze{
     */
     private boolean solve(int row, int col){
         if(animate){
-            System.out.println("\033[2J\033[1;1H"+this);
+            System.out.println("\033[2J\033[1;1H"+this.toString());
             wait(20);
         }
-
+        if(maze[row][col] == '#' || maze[row][col] == '.' || maze[row][col] == '@'){
+            return false;
+        }
+        else if(maze[row][col] == 'E'){
+            return true;
+        }
+        maze[row][col] = '@';
+        if(solve(row+1, col) || solve(row-1, col) || solve(row, col+1) || solve(row, col-1)){
+            return true;
+        }
+        maze[row][col] = '.';
         //COMPLETE SOLVE
         return false; //so it compiles
     }
@@ -120,7 +134,6 @@ public class Maze{
             }
             count++;
         }
-        System.out.println(count+", "+cols);
         maze = new char[count][cols];
         count = 0;
         while(inf2.hasNextLine()){
@@ -135,5 +148,18 @@ public class Maze{
             return;
         }
     }
-
+    public String toString(){
+        String result = "";
+        for(int i = 0; i<maze.length; i++){
+            for(int k = 0; k<maze[0].length; k++){
+                if(i == cursorX && k == cursorY){
+                    result += "\033[0m";
+                }
+                result += maze[i][k];
+            }
+            result += "\n";
+        }
+        return result;
+    }
+    
 }
