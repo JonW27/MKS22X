@@ -1,3 +1,4 @@
 *.class
 02NQueens/Test02.java
 01Recursion/Test01.java
+*.DS_Store

@@ -4,11 +4,11 @@ public class Driver{
         Maze f;
         f = new Maze("data3.dat");//true animates the maze.
         // test the case where its given bad data.
-        
-        f.setAnimate(true);
+
+        f.setAnimate(false);
         /*f.printMaze();*/
         f.solve();
         //f.printMaze();
-        System.out.println(f);
+        //System.out.println(f);
     }
 }
