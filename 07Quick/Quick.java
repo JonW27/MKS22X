@@ -1,5 +1,5 @@
 import java.util.Random;
-public class Partition{
+public class Quick{
     static Random rand = new Random();
 
     private static void swap(int[] data, int first, int second){
@@ -23,4 +23,17 @@ public class Partition{
         return i;
 
     }
+    public static int quickselect(int[] data, int k){
+	return helper(data, k, 0, data.length-1);
+   }
+   private static int helper(int[] data, int k, int start, int end){
+	int partition = partition(data, start, end);
+	if(partition == k){
+		return data[k];
+	}
+	if(partition < k){
+		return helper(data, k, start, k);
+	}
+	return helper(data, k, k, end);
+  }
 }
