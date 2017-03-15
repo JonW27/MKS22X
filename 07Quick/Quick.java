@@ -31,6 +31,6 @@ public class Quick{
 	if(partition == k){
 		return data[k];
 	}
-	return partition < k ? helper(data, k, start, k) : helper(data, k, k, end);
+	return (partition < k) ? helper(data, k, start, k) : helper(data, k, k, end);
   }
 }
