@@ -3,7 +3,7 @@ public class Quiz2Redux{
     public static ArrayList<String> combinations(String s){
       ArrayList<String>words = new ArrayList<String>();
       help(words, s, "", 0);
-      System.out.println(words);
+      //System.out.println(words);
       Collections.sort(words);
       return words;
     }

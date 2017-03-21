@@ -2,6 +2,9 @@ import java.util.Scanner;
 import java.util.Arrays;
 import java.io.*;
 public class USACO{
+    //public USACO(){
+	//do nothing, but just to use nonstatic methods
+    //}
     public static int bronze(String filename){
         File infile = new File(filename);
         Scanner inf;
