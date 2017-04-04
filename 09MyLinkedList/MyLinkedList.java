@@ -1,16 +1,18 @@
+import java.util.*;
 public class MyLinkedList{
-  LNode start;
-  LNode end;
+  LNode start, end;
   int size;
 
   public MyLinkedList(){
     size = 0;
-    start = new LNode();
-    end = start;
+    //start = new LNode();
+    //end = start;
   }
   public boolean add(int value){
     LNode temp = new LNode(value);
-    end.next = temp;
+    if(size != 0){	
+	end.next = temp;
+    }
     temp.prev = end;
     end = temp;
     size++;
@@ -24,7 +26,7 @@ public class MyLinkedList{
       throw new IndexOutOfBoundsException();
     }
     LNode current = start;
-    for(int i = 0; i < index+1; i++){
+    for(int i = 0; i < index; i++){
       current = current.next;
     }
     return current.value;
@@ -92,6 +94,24 @@ public class MyLinkedList{
     }
     size--;
     return val;
+  }
+  private LNode getNthNode(int n){
+      if(n <= size / 2){
+	  // start from starting position
+	  LNode current = start;
+	  for(int i = 0; i < n + 1; i++){
+	      current = current.next;
+	  }
+	  return current;
+      }
+      else{
+	  LNode current = end;
+	  for(int i = 0; i < n + 1; i++){
+	      current = current.prev;
+	  }
+	  return current;
+	  // start from ending position, yay!
+      }
   }
   public String toString(){
     if(size == 0){ // need to do this due to the creation of a LNode at the beginning for facilitated chaining
