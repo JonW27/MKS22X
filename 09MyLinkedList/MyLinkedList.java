@@ -1,5 +1,5 @@
 import java.util.*;
-public class MyLinkedList{
+public class MyLinkedList implements Iterable<Integer>{
   LNode start, end;
   int size;
 
@@ -10,46 +10,27 @@ public class MyLinkedList{
   }
   public boolean add(int value){
     LNode temp = new LNode(value);
-    if(size != 0){	
-	end.next = temp;
-    }
-    temp.prev = end;
-    end = temp;
-    size++;
+    addAfter(getNthNode(size-1), temp);
     return true;
   }
   public int size(){
     return size;
   }
   public int get(int index){
-    if(index > size - 1 || index < 0){
-      throw new IndexOutOfBoundsException();
-    }
-    LNode current = start;
-    for(int i = 0; i < index; i++){
-      current = current.next;
-    }
-    return current.value;
+    return getNthNode(index).value;
   }
   public int set(int index, int newValue){
-    if(index > size -1 || index < 0){
-      throw new IndexOutOfBoundsException();
-    }
-    LNode current = start;
-    for(int i = 0; i < index+1; i++){
-      current = current.next;
-    }
+    LNode current = getNthNode(index);
     int temp = current.value;
     current.value = newValue;
     return temp;
   }
   public int indexOf(int value){
-    if(size == 0){ // need to do this due to the creation of a LNode at the beginning for facilitated chaining
+    if(size == 0){
       return -1;
     }
     LNode current = start;
-    current = current.next;
-    for(int i = 0; i < size - 1; i++){
+    for(int i = 0; i < size; i++){
       if(current.value == value){
         return i;
       }
@@ -58,75 +39,145 @@ public class MyLinkedList{
     return -1;
   }
   public void add(int index, int value){
-    if(index > size - 1 || index < 0){
-      throw new IndexOutOfBoundsException();
-    }
-    LNode current = start;
+    LNode current = getNthNode(index);
     LNode temp = new LNode(value);
-    for(int i = 0; i < size; i++){
-      if(i == index){
-        temp.prev = current;
-      }
-      if(i == index + 1){
-        current.prev = temp;
-        temp.next = current;
-      }
-      current = current.next;
+    if(index == size){
+      addAfter(getNthNode(size-1), temp);
+      return;
     }
-    temp.prev.next = temp;
+    if(index != 0){
+      addAfter(getNthNode(index-1), temp);
+      return;
+    }
+    else{
+      start = temp;
+      current.prev = temp;
+      temp.next = current;
+    }
     size++;
   }
   public int remove(int index){
-    if(index > size -1 || index < 0){
-      throw new IndexOutOfBoundsException();
+    LNode current = getNthNode(index);
+    if(index == 0){
+      start = current.next;
     }
-    LNode current = start;
-    int val = -1;
-    for(int i = 0; i < size; i++){
-      if(i == index + 1){
-        val = current.value;
-      }
-      if(i == index + 2){
-        current.prev = current.prev.prev;
-        current.prev.next = current;
-      }
-      current = current.next;
+    else if(index == size - 1){
+      end = current.prev;
+    }
+    else{
+      current.prev.next = current.next;
+      current.next.prev = current.prev;
     }
     size--;
-    return val;
+    return current.value;
   }
   private LNode getNthNode(int n){
+      if(n > size || n < 0 && size != 0){ // think this over
+        throw new IndexOutOfBoundsException();
+      }
       if(n <= size / 2){
-	  // start from starting position
-	  LNode current = start;
-	  for(int i = 0; i < n + 1; i++){
-	      current = current.next;
-	  }
-	  return current;
+	      // start from starting position
+	      LNode current = start;
+	      for(int i = 0; i < n; i++){
+	        current = current.next;
+	      }
+	      return current;
       }
       else{
-	  LNode current = end;
-	  for(int i = 0; i < n + 1; i++){
-	      current = current.prev;
-	  }
-	  return current;
-	  // start from ending position, yay!
+	      LNode current = end;
+	      for(int i = 0; i < size - (n + 1); i++){
+	        current = current.prev;
+	      }
+	      return current;
       }
   }
+  private void addAfter(LNode location, LNode toBeAdded){
+    if(size == 0){
+      start = toBeAdded;
+      end = toBeAdded;
+    }
+    else if(location == null){
+      location.next.prev = toBeAdded;
+      toBeAdded.next = location.next;
+      start = toBeAdded;
+    }
+    else if(location.next == null){
+      location.next = toBeAdded;
+      toBeAdded.prev = location;
+      end = toBeAdded;
+    }
+    else{
+      location.next.prev = toBeAdded;
+      toBeAdded.next = location.next;
+      location.next = toBeAdded;
+      toBeAdded.prev = location;
+    }
+    size++;
+    //System.out.println(end.value);
+  }
+
+  private void remove(LNode target){
+    target.prev.next = target.next;
+    target.next = target.prev;
+  }
+
   public String toString(){
-    if(size == 0){ // need to do this due to the creation of a LNode at the beginning for facilitated chaining
+    if(size == 0){ // need to do this due to the commas
       return "[]";
     }
     String result = "[";
     LNode current = start;
-    current = current.next;
+    for(int i = 0; i < size - 1; i++){
+      result = result + current.value + ", ";
+      current = current.next;
+      System.out.println(current.value);
+      /*if(i!=size-2){
+        System.out.println(current.next);
+      }*/
+    }
+    result = result + current.value+"]";
+    return result;
+  }
+
+  /*public String debugToString(){
+    if(size == 0){ // need to do this due to the commas
+      return "[]";
+    }
+    String result = "[";
+    LNode current = start;
     for(int i = 0; i < size - 1; i++){
       result = result + current.value + ", ";
       current = current.next;
     }
     result = result + current.value+"]";
     return result;
-  }
+  }*/
+
+  @Override
+	public Iterator<Integer> iterator() {
+		return new Iterator<Integer>() {
+			LNode element = start;
+      @Override
+			public Integer next() {
+        if(!hasNext()){
+          throw new NoSuchElementException();
+        }
+				int temp = element.value;
+				element = element.next;
+				return temp;
+			}
+
+			@Override
+			public boolean hasNext() {
+				return element != null;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
 
   private class LNode{
     int value;
